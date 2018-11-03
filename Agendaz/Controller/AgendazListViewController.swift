@@ -10,19 +10,20 @@ import UIKit
 
 class AgendazListViewController: UITableViewController {
 
-    var myList = ["peevi you are","my life !","I want you till my death bed","and more","dont hate me for wanting so much!"]
-    let defaults = UserDefaults.standard
+    var myList = [List]()
+   let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.Plist")
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-      
-        if let items = defaults.array(forKey: "myListArray") as? [String] {
-            myList = items
-        }
-       
         
-    }
+       loadData()
+        
+        
+        print(dataFilePath!)
+       
+}
     
     //MARK - TableView Data Source Methods
     
@@ -32,8 +33,13 @@ class AgendazListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyListItemCell", for: indexPath)
-        cell.textLabel?.text = myList[indexPath.row]
-      
+        
+        let item = myList[indexPath.row]
+        
+        cell.textLabel?.text = item.title
+        
+        cell.accessoryType = item.done ? .checkmark :.none
+     
         return cell
         
     }
@@ -41,13 +47,11 @@ class AgendazListViewController: UITableViewController {
      //MARK - TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }else{
-             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        myList[indexPath.row].done = !myList[indexPath.row].done
+        saveData()
+        
         tableView.deselectRow(at: indexPath, animated: true)
+   
     }
     
     //MARK - Add new item
@@ -58,19 +62,52 @@ class AgendazListViewController: UITableViewController {
         )
         let action = UIAlertAction(title: "Add Agenda", style: .default) { (actiom) in
             //what happens when user clicks Add Agenda
-            self.myList.append(textField.text!)
-            self.defaults.set(self.myList, forKey: "myListArray")
-            self.tableView.reloadData()
-            print("Succes")
+            let newItem = List()
+            newItem.title = textField.text!
+            self.myList.append(newItem)
+           
+         self.saveData()
+            
+            
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new Agenda"
             textField = alertTextField
         }
         alert.addAction(action)
+        
         present(alert,animated: true,completion: nil)
         
     }
     
+    // MARK -  Model Manipipulation methods
+    func saveData(){
+        let encoder = PropertyListEncoder()
+        
+        do{
+            let data = try encoder.encode(myList)
+            try data.write(to: dataFilePath!)
+        }catch{
+            print("Error encoding array , \(error)")
+        }
+        tableView.reloadData()
+        
+        
+    }
+    
+    func loadData(){
+        if let data = try? Data(contentsOf: dataFilePath!){
+            let decoder = PropertyListDecoder()
+            do{
+                 myList = try decoder.decode([List].self, from: data)
+            }catch{
+                print("Error loading the data, \(error)")
+            }
+           
+            
+        }
+    }
+    
 }
+
 
