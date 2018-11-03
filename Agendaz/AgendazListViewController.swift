@@ -10,10 +10,18 @@ import UIKit
 
 class AgendazListViewController: UITableViewController {
 
-    let myList = ["peevi you are","my life !","I want you till my death bed","and more","dont hate me for wanting so much!"]
+    var myList = ["peevi you are","my life !","I want you till my death bed","and more","dont hate me for wanting so much!"]
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+      
+        if let items = defaults.array(forKey: "myListArray") as? [String] {
+            myList = items
+        }
+       
+        
     }
     
     //MARK - TableView Data Source Methods
@@ -42,7 +50,27 @@ class AgendazListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    //MARK - Add new item
 
-
+    @IBAction func addAgendaPressed(_ sender: Any) {
+        var textField = UITextField()
+        let alert = UIAlertController(title: "Add Agenda", message: "", preferredStyle: .alert
+        )
+        let action = UIAlertAction(title: "Add Agenda", style: .default) { (actiom) in
+            //what happens when user clicks Add Agenda
+            self.myList.append(textField.text!)
+            self.defaults.set(self.myList, forKey: "myListArray")
+            self.tableView.reloadData()
+            print("Succes")
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new Agenda"
+            textField = alertTextField
+        }
+        alert.addAction(action)
+        present(alert,animated: true,completion: nil)
+        
+    }
+    
 }
 

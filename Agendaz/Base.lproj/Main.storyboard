@@ -32,7 +32,13 @@
                             <outlet property="delegate" destination="3U5-8q-zsL" id="JKR-xT-Zly"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Agendaz" id="gAL-qC-Urb"/>
+                    <navigationItem key="navigationItem" title="Agendaz" id="gAL-qC-Urb">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="ueL-sm-0Ih">
+                            <connections>
+                                <action selector="addAgendaPressed:" destination="3U5-8q-zsL" id="coc-mB-ykd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ywc-ac-39h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -46,7 +52,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SXC-5u-K0V">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.35686274509803922" green="0.74509803921568629" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.1803921568627451" green="0.59215686274509804" blue="0.41568627450980389" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
